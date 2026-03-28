@@ -13,8 +13,6 @@ curl -X POST https://fiapchallengecspm.gariel.cloud/v1/run/scanner \
       "pci-dss"
     ],
     "credentials": {
-      "access_key_id": "AKIAXXXXXXXXXXXXXXXX",
-      "secret_access_key": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     },
     "output_format": "json"
   }'
