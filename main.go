@@ -84,6 +84,12 @@ func runScanner(c echo.Context) error {
 	reqJSON, _ := json.Marshal(req)
 	log.Printf("[SCANNER] New Request Received: %s", string(reqJSON))
 
+	// Validation: Credentials must have at least 2 entries
+	if len(req.Credentials) < 2 {
+		log.Printf("[SCANNER] Validation Failed: Credentials has only %d entries, expected at least 2", len(req.Credentials))
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "at least 2 credentials are required (e.g., access_key_id and secret_access_key)"})
+	}
+
 	// Simulation: Sleep for random seconds
 	sleepDuration := rand.Intn(MaxSleepSeconds-MinSleepSeconds+1) + MinSleepSeconds
 	log.Printf("[SCANNER] Simulating processing for %d seconds...", sleepDuration)

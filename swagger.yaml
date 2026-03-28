@@ -1,0 +1,99 @@
+openapi: 3.0.0
+info:
+  title: Scanner API Simulation
+  description: A simple Go web API that simulates running a Prowler scan.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+    description: Local development server
+  - url: https://fiapchallengecspm.gariel.cloud
+    description: Deployed server
+paths:
+  /v1/run/scanner:
+    post:
+      summary: Run a simulated scan
+      description: Receives scan parameters and returns 1-5 random failure results.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScannerRequest'
+      responses:
+        '200':
+          description: A list of failure results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProwlerResult'
+        '400':
+          description: Invalid request body
+components:
+  schemas:
+    ScannerRequest:
+      type: object
+      properties:
+        provider:
+          type: string
+          example: aws
+        regions:
+          type: array
+          items:
+            type: string
+          example: ["us-east-1", "eu-west-1"]
+        compliance_frameworks:
+          type: array
+          items:
+            type: string
+          example: ["cis", "pci-dss"]
+        credentials:
+          type: object
+          minProperties: 2
+          properties:
+            access_key_id:
+              type: string
+              example: AKIA...
+            secret_access_key:
+              type: string
+              example: ...
+        output_format:
+          type: string
+          example: json
+      required:
+        - provider
+        - regions
+        - compliance_frameworks
+        - credentials
+        - output_format
+    ProwlerResult:
+      type: object
+      properties:
+        check_id:
+          type: string
+          example: iam_user_console_access_unused
+        check_title:
+          type: string
+          example: Ensure IAM users with console access have used it in the last 45 days
+        service:
+          type: string
+          example: iam
+        region:
+          type: string
+          example: us-east-1
+        resource_id:
+          type: string
+          example: user1
+        severity:
+          type: string
+          enum: [LOW, MEDIUM, HIGH, CRITICAL]
+          example: LOW
+        remediation:
+          type: string
+          example: Disable unused console access
+        resource_tags:
+          type: array
+          items:
+            type: string
+          nullable: true
